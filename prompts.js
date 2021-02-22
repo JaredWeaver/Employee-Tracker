@@ -6,16 +6,35 @@ const consoleTable = require('console.table');
 
 const mainMenu = () => {
 
-console.log('====================================================================================================')
+console.log(chalk.greenBright('===================================================================================================='));
 
-console.log(chalk.greenBright(figlet.textSync('Employee Tracker')))
+console.log(chalk.magentaBright(figlet.textSync('Employee Tracker')))
 
-console.log(chalk.magentaBright('Created By: Jared Weaver'));
+console.log(chalk.magentaBright('                                         Created By: Jared Weaver'));
 
 
-console.log('====================================================================================================')
+console.log(chalk.greenBright('===================================================================================================='));
 //begins questioning 
-
+    inquirer.prompt([
+        {
+        type: 'list',
+        message: "What would you like to do?",
+        name: 'mainMenuChoice',
+        choices: [
+            'Add Department',
+            'Add Role',
+            'Add Employee', 
+            'View Departments',
+            'View Roles',
+            'View Employees',
+            'Update Employee Role',
+            'Update Employee Managers',
+            'View Employees by Manager',
+            'View Total Utilized Budget by Department',
+            'Exit'
+        ] 
+        }
+    ])
 }
 
 const addDepartment = () => {
