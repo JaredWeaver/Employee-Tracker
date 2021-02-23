@@ -1,20 +1,27 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const figlet = require('figlet');
-const chalkAnimation = require('chalk-animation');
-const consoleTable = require('console.table');
+const connection = require('./db.js')
 
+const init = () => {
+
+    connection.connect((err) => {
+        if (err) throw err;
+
+            console.log(chalk.greenBright('===================================================================================================='));
+
+            console.log(chalk.magentaBright(figlet.textSync('Employee Tracker')))
+
+            console.log(chalk.redBright('                                         Created By: Jared Weaver'));
+
+            console.log(chalk.greenBright('===================================================================================================='));
+            //begins questioning 
+            mainMenu();
+    });
+}
+    
 const mainMenu = () => {
 
-console.log(chalk.greenBright('===================================================================================================='));
-
-console.log(chalk.magentaBright(figlet.textSync('Employee Tracker')))
-
-console.log(chalk.magentaBright('                                         Created By: Jared Weaver'));
-
-
-console.log(chalk.greenBright('===================================================================================================='));
-//begins questioning 
     inquirer.prompt([
         {
         type: 'list',
@@ -34,7 +41,11 @@ console.log(chalk.greenBright('=================================================
             'Exit'
         ] 
         }
-    ])
+    ]).then(response => {
+        const {choices} = response;
+        console.log({choices});
+
+    });
 }
 
 const addDepartment = () => {
@@ -88,4 +99,4 @@ const combineSalaries = () => {
 
 
 
-mainMenu();
+init();
