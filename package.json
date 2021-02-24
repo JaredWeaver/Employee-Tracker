@@ -1,5 +1,5 @@
 {
-  "name": "Employee-Tracker",
+  "name": "employee-tracker",
   "version": "1.0.0",
   "description": "A command line application that builds a database for managing a company's employees using node, inquirer, and MySQL.",
   "main": "index.js",
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",
-    "console.table": "^0.10.0",
+    "console-table-printer": "^2.7.5",
     "figlet": "^1.5.0",
     "inquirer": "^7.3.3",
     "mysql": "^2.18.1"
