@@ -142,7 +142,7 @@ const addRoles = () => {
           name: "salary",
         },
         {
-          type: "",
+          type: "list",
           message: "What is the department of the role?",
           name: "department_id",
           choices: dept,
@@ -177,7 +177,7 @@ const addEmployees = () => {
       };
     });
     connection.query("SELECT * FROM employee", (err, data) => {
-      const employee = data.map((employee) => {
+      const manager = data.map((employee) => {
         return {
           name: employee.first_name + " " + employee.last_name,
           value: employee.id,
@@ -205,7 +205,7 @@ const addEmployees = () => {
             type: "list",
             message: "Who is this employee's manager?",
             name: "manager",
-            choices: employee,
+            choices: manager,
           },
 
           //need to join with roles_id and manager_id
@@ -234,26 +234,36 @@ const viewDepartments = () => {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;
     printTable(res);
-  });
-};
-
-const viewRoles = () => {
-  connection.query("SELECT * FROM roles", (err, res) => {
-    if (err) throw err;
-    printTable(res);
     mainMenu();
   });
 };
 
-const viewEmployees = () => {
+const viewRoles = () => {
   connection.query(
-    `SELECT employee.id, employee.first_name, employee.last_name, roles.title, concat(manager.first_name, " ", manager.last_name) manager
-  FROM employee left join roles on employee.role_id=roles.id
-  left join employee manager on manager.manager_id=employee.id
-  ;`,
+    `SELECT roles.id, roles.title, roles.salary, (department.department_name) department
+    FROM roles 
+    LEFT JOIN department
+    ON roles.department_id = department.id;`,
     (err, res) => {
       if (err) throw err;
       printTable(res);
+      mainMenu();
+    }
+  );
+};
+
+const viewEmployees = () => {
+  connection.query(
+    `SELECT employee.id, employee.first_name, employee.last_name, roles.title, CONCAT(manager.first_name, " ", manager.last_name) manager
+    FROM employee 
+    LEFT JOIN roles 
+    ON employee.role_id=roles.id
+    LEFT JOIN employee manager 
+    ON manager.manager_id=employee.id;`,
+    (err, res) => {
+      if (err) throw err;
+      printTable(res);
+      mainMenu();
     }
   );
 };
@@ -266,8 +276,32 @@ const updateEmployeeMgr = () => {};
 
 const viewEmployeeByMgr = () => {};
 
-const deleteObject = (department, role, manager) => {};
-
+const remove = (choice, tableName, id) => {
+  // connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
+  //   let arr = res.map((tableName) => {
+  //     return {
+  //       name: tableName.name,
+  //       value: tableName.id,
+  //     };
+  //   });
+  //   inquirer
+  //     .prompt([
+  //       {
+  //         type: "list",
+  //         message: `"Which ${choice} would you like to remove?"`,
+  //         name: "del",
+  //         choices: arr,
+  //       },
+  //     ])
+  //     .then((remove) => {
+  //       // let removeThis = remove.del;
+  //       // connection.query(`DELETE FROM ${tableName} WHERE id=${id}`);
+  //       // if(err) throw err;
+  //       // console.log(`${choice} successfully removed.`)
+  //       // mainMenu();
+  //     });
+  // });
+};
 const combineSalaries = () => {};
 
 init();
