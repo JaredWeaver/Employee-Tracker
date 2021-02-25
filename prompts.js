@@ -50,6 +50,9 @@ const mainMenu = () => {
           "Update Employee Managers",
           "View Employees by Manager",
           "View Total Utilized Budget by Department",
+          "Remove Employee",
+          "Remove Department",
+          "Remove Role",
           "Exit",
         ],
       },
@@ -87,6 +90,15 @@ const mainMenu = () => {
           break;
         case "View Total Utilized Budget by Department":
           combineSalaries();
+          break;
+        case "Remove Employee":
+          removeEmployee();
+          break;
+        case "Remove Department":
+          removeDept();
+          break;
+        case "Remove Role":
+          removeRole();
           break;
         case "Exit":
           connection.end();
@@ -259,7 +271,7 @@ const viewEmployees = () => {
     LEFT JOIN roles 
     ON employee.role_id=roles.id
     LEFT JOIN employee manager
-    ON manager.manager_id=employee.id;`,
+    ON manager.id=employee.manager_id;`,
     (err, res) => {
       if (err) throw err;
       printTable(res);
@@ -276,32 +288,88 @@ const updateEmployeeMgr = () => {};
 
 const viewEmployeeByMgr = () => {};
 
-const remove = (choice, tableName, id) => {
-  // connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
-  //   let arr = res.map((tableName) => {
-  //     return {
-  //       name: tableName.name,
-  //       value: tableName.id,
-  //     };
-  //   });
-  //   inquirer
-  //     .prompt([
-  //       {
-  //         type: "list",
-  //         message: `"Which ${choice} would you like to remove?"`,
-  //         name: "del",
-  //         choices: arr,
-  //       },
-  //     ])
-  //     .then((remove) => {
-  //       // let removeThis = remove.del;
-  //       // connection.query(`DELETE FROM ${tableName} WHERE id=${id}`);
-  //       // if(err) throw err;
-  //       // console.log(`${choice} successfully removed.`)
-  //       // mainMenu();
-  //     });
-  // });
+const removeEmployee = () => {
+  connection.query('SELECT * FROM employee', (err, res) => {
+    let arr = res.map((employee) => {
+      return {
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          message: `"Which employee would you like to remove?"`,
+          name: "terminate",
+          choices: arr,
+        },
+      ])
+      .then((remove) => {
+        let removeThis = remove.terminate;
+        connection.query(`DELETE FROM employee WHERE id=${removeThis}`);
+        if(err) throw err;
+        console.log('Employee successfully removed.')
+        mainMenu();
+      });
+  });
 };
+
+const removeRole = () => {
+  connection.query('SELECT * FROM roles', (err, res) => {
+    let arr = res.map((roles) => {
+      return {
+        name: roles.title,
+        value: roles.id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          message: `"Which role would you like to remove?"`,
+          name: "terminate",
+          choices: arr,
+        },
+      ])
+      .then((remove) => {
+        let removeThis = remove.terminate;
+        connection.query(`DELETE FROM roles WHERE id=${removeThis}`);
+        if(err) throw err;
+        console.log('Role successfully removed.')
+        mainMenu();
+      });
+  });
+};
+
+const removeDept = () => {
+  connection.query('SELECT * FROM department', (err, res) => {
+    let arr = res.map((department) => {
+      return {
+        name: department.department_name,
+        value: department.id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          message: `"Which department would you like to remove?"`,
+          name: "terminate",
+          choices: arr,
+        },
+      ])
+      .then((remove) => {
+        let removeThis = remove.terminate;
+        connection.query(`DELETE FROM department WHERE id=${removeThis}`);
+        if(err) throw err;
+        console.log('Department successfully removed.')
+        mainMenu();
+      });
+  });
+};
+
+
 const combineSalaries = () => {};
 
 init();

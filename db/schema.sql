@@ -25,7 +25,7 @@ SELECT employee.id, employee.first_name, employee.last_name, roles.title, CONCAT
  LEFT JOIN roles 
  ON employee.role_id=roles.id
  LEFT JOIN employee manager 
- ON manager.manager_id=employee.id;
+ ON manager.id=employee.id;
 
 SELECT roles.id, roles.title, roles.salary, department.department_name
  FROM roles 
