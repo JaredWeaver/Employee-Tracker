@@ -258,7 +258,7 @@ const viewEmployees = () => {
     FROM employee 
     LEFT JOIN roles 
     ON employee.role_id=roles.id
-    LEFT JOIN employee manager 
+    LEFT JOIN employee manager
     ON manager.manager_id=employee.id;`,
     (err, res) => {
       if (err) throw err;
