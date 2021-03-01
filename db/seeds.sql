@@ -1,24 +1,42 @@
-DROP DATABASE IF EXISTS employee_trackerdb;
-CREATE DATABASE employee_trackerdb;
 
-USE employee_trackerdb;
+INSERT INTO department(department_name)
+VALUES("EXECUTIVE"), ("ENGINEERING"), ("SALES"), ("MARKETING"), ("HUMAN RESOURCES");
 
-CREATE TABLE department(
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    department_name VARCHAR(30) NOT NULL
-);
+INSERT INTO roles(title, salary, department_id)
+VALUES  
+('CEO', 400000, 1), 
+('CTO', 200000, 1), 
+('CFO', 200000, 1), 
+('ENGINEER', 100000, 2),
+('SENIOR ENGINEER', 150000, 2),
+('ACCOUNT EXECUTIVE', 55000, 3),
+('SALES MANAGER', 75000, 3),
+('MARKETING COORDINATOR', 55000, 4),
+('MARKETING MANAGER', 40000, 4),
+('OFFICE MANAGER', 80000, 5);
 
-CREATE TABLE roles(
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(30) NOT NULL,
-    salary DECIMAL(10, 2) NOT NULL,
-    department_id INTEGER
-);
+INSERT INTO employee(first_name, last_name, role_id)
+values 
+("SUSAN", "SMITH", 1);
 
-CREATE TABLE employee(
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    role_id INTEGER,
-    manager_id INTEGER
-);
+
+SELECT employee.id, employee.first_name, employee.last_name, roles.title, CONCAT(manager.first_name, " ", manager.last_name) manager
+ FROM employee 
+ LEFT JOIN roles 
+ ON employee.role_id=roles.id
+ LEFT JOIN employee manager 
+ ON manager.id=employee.id;
+
+SELECT roles.id, roles.title, roles.salary, department.department_name
+ FROM roles 
+ LEFT JOIN department
+ ON roles.department_id = department.id;
+
+ SELECT CONCAT(manager.first_name, " ", manager.last_name) manager, employee.id, employee.first_name, employee.last_name, roles.title
+    FROM employee 
+    LEFT JOIN employee manager
+    ON manager.id=employee.manager_id
+	  INNER JOIN roles 
+    ON employee.role_id=roles.id
+    ORDER BY manager;
+ 

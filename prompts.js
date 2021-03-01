@@ -85,11 +85,11 @@ const mainMenu = () => {
         case "Update Employee Managers":
           updateEmployeeMgr();
           break;
-        case "View Employee by Manager":
+        case "View Employees by Manager":
           viewEmployeeByMgr();
           break;
         case "View Total Utilized Budget by Department":
-          combineSalaries();
+          departmentBudget();
           break;
         case "Remove Employee":
           removeEmployee();
@@ -309,13 +309,14 @@ const updateRoles = () => {
             name: "role",
             choices: updatedRoles,
           },
-      
         ])
         .then((response) => {
           //delete role from chosen employee and add new one?
           let roleRes = response.role;
           let employeeRes = response.employee;
-          connection.query(`UPDATE employee SET role_id=${roleRes} WHERE id=${employeeRes}`);
+          connection.query(
+            `UPDATE employee SET role_id=${roleRes} WHERE id=${employeeRes}`
+          );
           if (err) throw err;
           console.log("Employee successfully updated.");
           mainMenu();
@@ -326,9 +327,60 @@ const updateRoles = () => {
 
 //BONUS FUNCTIONS
 
-const updateEmployeeMgr = () => {};
+const updateEmployeeMgr = () => {
+  connection.query("SELECT * FROM employee", (err, data) => {
+    const updateEmployeeMgrArr = data.map((employee) => {
+      return {
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+        manager: employee.manager_id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          message: "Which employee would you like to update?",
+          name: "employee",
+          choices: updateEmployeeMgrArr,
+        },
+        {
+          type: "list",
+          message: "Who is the employees new manager?",
+          name: "newMgr",
+          choices: updateEmployeeMgrArr,
+        },
+      ])
+      .then((response) => {
+        //delete role from chosen employee and add new one?
+        let employeeChoice = response.employee;
+        let updatedMgr = response.newMgr;
+        connection.query(
+          `UPDATE employee SET manager_id=${updatedMgr} WHERE id=${employeeChoice}`
+        );
+        if (err) throw err;
+        console.log("Employee's manager successfully updated.");
+        mainMenu();
+      });
+  });
+};
 
-const viewEmployeeByMgr = () => {};
+const viewEmployeeByMgr = () => {
+  connection.query(
+    `SELECT CONCAT(manager.first_name, " ", manager.last_name) manager, CONCAT(employee.first_name, ' ', employee.last_name) AS employee, roles.title
+    FROM employee 
+    LEFT JOIN employee manager
+    ON manager.id=employee.manager_id
+	  INNER JOIN roles 
+    ON employee.role_id=roles.id
+    ORDER BY manager;`,
+    (err, res) => {
+      if (err) throw err;
+      printTable(res);
+      mainMenu();
+    }
+  );
+};
 
 const removeEmployee = () => {
   connection.query("SELECT * FROM employee", (err, res) => {
@@ -411,6 +463,20 @@ const removeDept = () => {
   });
 };
 
-const combineSalaries = () => {};
+const departmentBudget = () => {
+  connection.query(
+    `SELECT department_id AS id, 
+    department.department_name AS departments,
+    SUM(salary) AS salaries
+    FROM  roles  
+    INNER JOIN department ON roles.department_id = department.id GROUP BY roles.department_id;`,
+    (err, res) => {
+      if (err) throw err;
+      printTable(res);
+      mainMenu();
+    }
+  );
+
+};
 
 init();
