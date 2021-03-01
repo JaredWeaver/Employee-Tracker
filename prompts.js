@@ -280,7 +280,49 @@ const viewEmployees = () => {
   );
 };
 
-const updateRoles = () => {};
+const updateRoles = () => {
+  connection.query("SELECT * FROM roles", (err, res) => {
+    const updatedRoles = res.map((roles) => {
+      return {
+        name: roles.title,
+        value: roles.id,
+      };
+    });
+    connection.query("SELECT * FROM employee", (err, data) => {
+      const updateEmployeeArr = data.map((employee) => {
+        return {
+          name: employee.first_name + " " + employee.last_name,
+          value: employee.id,
+        };
+      });
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Which employee would you like to update?",
+            name: "employee",
+            choices: updateEmployeeArr,
+          },
+          {
+            type: "list",
+            message: "What is the employees new role?",
+            name: "role",
+            choices: updatedRoles,
+          },
+      
+        ])
+        .then((response) => {
+          //delete role from chosen employee and add new one?
+          let roleRes = response.role;
+          let employeeRes = response.employee;
+          connection.query(`UPDATE employee SET role_id=${roleRes} WHERE id=${employeeRes}`);
+          if (err) throw err;
+          console.log("Employee successfully updated.");
+          mainMenu();
+        });
+    });
+  });
+};
 
 //BONUS FUNCTIONS
 
@@ -289,7 +331,7 @@ const updateEmployeeMgr = () => {};
 const viewEmployeeByMgr = () => {};
 
 const removeEmployee = () => {
-  connection.query('SELECT * FROM employee', (err, res) => {
+  connection.query("SELECT * FROM employee", (err, res) => {
     let arr = res.map((employee) => {
       return {
         name: employee.first_name + " " + employee.last_name,
@@ -308,15 +350,15 @@ const removeEmployee = () => {
       .then((remove) => {
         let removeThis = remove.terminate;
         connection.query(`DELETE FROM employee WHERE id=${removeThis}`);
-        if(err) throw err;
-        console.log('Employee successfully removed.')
+        if (err) throw err;
+        console.log("Employee successfully removed.");
         mainMenu();
       });
   });
 };
 
 const removeRole = () => {
-  connection.query('SELECT * FROM roles', (err, res) => {
+  connection.query("SELECT * FROM roles", (err, res) => {
     let arr = res.map((roles) => {
       return {
         name: roles.title,
@@ -335,15 +377,15 @@ const removeRole = () => {
       .then((remove) => {
         let removeThis = remove.terminate;
         connection.query(`DELETE FROM roles WHERE id=${removeThis}`);
-        if(err) throw err;
-        console.log('Role successfully removed.')
+        if (err) throw err;
+        console.log("Role successfully removed.");
         mainMenu();
       });
   });
 };
 
 const removeDept = () => {
-  connection.query('SELECT * FROM department', (err, res) => {
+  connection.query("SELECT * FROM department", (err, res) => {
     let arr = res.map((department) => {
       return {
         name: department.department_name,
@@ -362,13 +404,12 @@ const removeDept = () => {
       .then((remove) => {
         let removeThis = remove.terminate;
         connection.query(`DELETE FROM department WHERE id=${removeThis}`);
-        if(err) throw err;
-        console.log('Department successfully removed.')
+        if (err) throw err;
+        console.log("Department successfully removed.");
         mainMenu();
       });
   });
 };
-
 
 const combineSalaries = () => {};
 
