@@ -3,7 +3,7 @@ A command line application that builds a database for managing a company's emplo
 
 ![Employee Tracker](assets/employee-trk-demo.gif)
 
-![Link to Demo](https://www.youtube.com/watch?v=Pif1bb6xDbo&feature=youtu.be)
+[Link to Demo](https://www.youtube.com/watch?v=Pif1bb6xDbo&feature=youtu.be)
 
 ## User Story
 
