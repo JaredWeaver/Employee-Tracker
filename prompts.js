@@ -325,8 +325,6 @@ const updateRoles = () => {
   });
 };
 
-//BONUS FUNCTIONS
-
 const updateEmployeeMgr = () => {
   connection.query("SELECT * FROM employee", (err, data) => {
     const updateEmployeeMgrArr = data.map((employee) => {
